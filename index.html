@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Intridea DiceBot</title>
+
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+	
+	<!-- Firebase -->
+  <script src="https://cdn.firebase.com/js/client/1.0.11/firebase.js"></script>
+  <!-- AngularJS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
+  <script src="https://cdn.firebase.com/libs/angularfire/0.7.1/angularfire.min.js"></script>
+
+  <script>
+    var app = angular.module("dicebot", ["firebase"]);
+		
+    function RequestsController($scope, $firebase) {
+      var requestsRef = new Firebase("https://dicebot.firebaseio.com/spin_requests").limit(5).startAt();
+      // Automatically syncs everywhere in realtime
+      $scope.requests = $firebase(requestsRef);
+    };
+
+    function PicsController($scope, $firebase) {
+      var picsRef = new Firebase("https://dicebot.firebaseio.com/spin_results").limit(1).startAt();
+      // Automatically syncs everywhere in realtime
+      $scope.pics = $firebase(picsRef);
+    };
+
+
+    function ResultsController($scope, $firebase) {
+      var resultsRef = new Firebase("https://dicebot.firebaseio.com/spin_results").limit(5).startAt();
+      // Automatically syncs everywhere in realtime
+      $scope.results = $firebase(resultsRef);
+    };
+  </script>
+</head>
+<body ng-app="dicebot">
+	<div class="container-fluid">
+		
+		<div class="row">
+			<div class="col-md-12">
+				<h1 class="text-center">DiceBot by <a href="http://intridea.com">INTRIDEA</a></h1>
+				<h3 class="text-center">To request a spin just send a tweet to <a href="https://twitter.com/intrideadicebot" target="_blank">@IntrideaDiceBot</a> with the hashtag #RollTheDice</h3>
+			</div>				
+		</div>
+
+		<div class="row">	
+				
+			<section ng-controller="RequestsController">	  
+				<div class="col-md-4">					
+					<div class="panel panel-default">
+					  <!-- Default panel contents -->
+					  <div class="panel-heading">Most Recent Requests</div>					
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<td><strong>Name</strong></td>
+										<td><strong>Tweet</strong></td>
+										<td><strong>Time</strong></td>										
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="request in requests">
+										<td><a href="https://twitter.com/{{request.user}}" target="_blank">@{{request.user}}</a></td>
+										<td>{{request.message}}</td>
+										<td>{{request.created_at}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>					
+				</div>
+			</section>
+
+			<section ng-controller="PicsController">	
+				<div class="col-md-4">
+					<div class="panel panel-default" ng-repeat="pic in pics">
+					  <!-- Default panel contents -->
+				  	<div class="panel-heading">
+							Most Recent Spin by 
+							<a href="https://twitter.com/{{pic.user}}" target="_blank">@{{pic.user}}</a> 
+							on {{pic.created_at}}
+						</div>
+						<img src="{{ pic.file_url }}" class="img-responsive"> 
+					</div>
+				</div>
+			</section>
+			
+			<section ng-controller="ResultsController">	
+				<div class="col-md-4">					
+					<div class="panel panel-default">
+					  <!-- Default panel contents -->
+					  <div class="panel-heading">Most Recent Spins</div>					
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<td><strong>Name</strong></td>
+										<td><strong>Rolled</strong></td>
+										<td><strong>Time</strong></td>										
+										<td>&nbsp;</td>																				
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="result in results">
+										<td><a href="https://twitter.com/{{result.user}}" target="_blank">@{{result.user}}</a></td>
+										<td>{{result.count}}</td>
+										<td>{{result.created_at}}</td>										
+										<td>
+											<a href="{{result.file_url}}" target="_blank">
+												<span class="glyphicon glyphicon-picture" />
+											</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>					
+				</div>
+				
+			</section>			
+		</div>
+		<hr>
+		<div class="row">
+			<div class="col-md-12">
+				<p class="text-center">
+					<a href="http://intridea.com">INTRIDEA</a>. 
+					We Make. Great Ideas Into Inspired Products.
+					<a href="http://intridea.com/contact">What Can We Make For You?</a>
+				</p>
+			</div>
+		</div>
+	
+	</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+</body>
+</html>
+
